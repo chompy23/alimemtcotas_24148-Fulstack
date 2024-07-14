@@ -1,0 +1,47 @@
+body {
+  width: 100vw;
+  height: 100vh;
+}
+
+#envio {
+  width: 80px;
+  height: 20px;
+}
+
+form p {
+  float: left;
+  margin-left: 2px;
+}
+
+#anim {
+  width: 20px;
+  height: 20px;
+}
+
+.item3-page2 {
+  align-content: baseline;
+  font-size: 16px;
+  text-align: center;
+  grid-column-start: 1;
+  grid-column-end: 12;
+  grid-row-start: 3;
+  font-family: "Jersey 20", sans-serif;
+  font-weight: 400;
+  font-style: italic;
+  
+}
+
+@media only screen and (max-width: 480px) {
+  .item3-page2 {
+    display: flex;
+    flex-wrap: wrap;
+    overflow: auto;
+    left: 10%;
+  }
+}
+
+@font-face {
+  font-family: "FontAwesome";
+
+  src: url("fontawesome-webfont.woff");
+}
