@@ -31,10 +31,9 @@ class Mascota:
         conexion.conn.close()
         return val
     
-    def consultar_mascota(self):
+    def consultar_mascota(self,id):
         conexion = Conexion('127.0.0.1','root', 'root', 'mascotas')
-        nombre = input("Ingrese el nombre de la mascota: ")
-        conexion.cursor.execute(f"SELECT * FROM mascota WHERE nombre='{nombre}'")
+        conexion.cursor.execute(f"SELECT * FROM mascota WHERE id={id}")
         val = conexion.cursor.fetchone()
         conexion.conn.close()
         return val
