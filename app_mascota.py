@@ -46,15 +46,8 @@ class Mascota:
         return val
         
             
-    def modificar_mascota(self):
+    def modificar_mascota(self, id_a_buscar, nuevo_nombre, nueva_especie, nueva_edad, nueva_raza, nueva_imagen_url, nuevo_id_secundario):
         conexion = Conexion('127.0.0.1','root', 'root', 'mascotas')
-        nuevo_nombre = input("Ingrese el nuevo nombre : ")
-        nueva_especie = input("Ingrese la nueva especie : ")
-        nueva_edad = input("Ingrese la nueva edad : ")
-        nueva_raza = input("Ingrese la nueva raza : ")
-        nueva_imagen_url = input("Ingrese la nueva imagen_url : ")
-        nuevo_id_secundario = int(input("Ingrese el nuevo id_secundario : "))
-        id_a_buscar = int(input("Ingrese el id de la mascota a modificar : ")) 
         valores = (nuevo_nombre, nueva_especie, nueva_edad, nueva_raza, nueva_imagen_url, nuevo_id_secundario, id_a_buscar)
         sql = ("UPDATE mascota  SET nombre=%s, especie=%s, edad=%s, raza=%s, imagen_url=%s, id_secundario=%s WHERE id=%s")
         conexion.cursor.execute(sql,valores)
