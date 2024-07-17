@@ -4,9 +4,8 @@ from app_conexion import Conexion
 
 
 class Mascota: 
-       
+      
     def tabla_mascota():
-        conexion = Conexion('127.0.0.1','root', 'root', 'mascotas')
         conexion.cursor.execute('''CREATE TABLE IF NOT EXISTS mascota (
                             id INT AUTO_INCREMENT PRIMARY KEY, 
                             nombre VARCHAR(255) NOT NULL, 
@@ -56,9 +55,8 @@ class Mascota:
         conexion.conn.close()
         return val
     
-    def eliminar_mascota(self):
+    def eliminar_mascota(self,id):
         conexion = Conexion('127.0.0.1','root', 'root', 'mascotas')
-        id = int(input("Ingrese el id de la mascota a eliminar : "))
         conexion.cursor.execute(f"DELETE FROM mascota WHERE id={id}")
         conexion.conn.commit()
         val = conexion.cursor.rowcount>0
