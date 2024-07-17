@@ -14,6 +14,8 @@ CORS(app) #habilita las referencias a otros servidores
 
 mascota = Mascota()
 
+
+
 #carpeta para guardar las imagenes
 ruta_destino = './static/imagen/'
 
@@ -45,7 +47,7 @@ def  agregar_mascota():
     nombre_imagen = secure_filename("imagen_url")
     nombre_base, extension  = os.path.splitext(nombre_imagen)
     nombre_imagen = f"{nombre_base}_{int(time.time())}{extension}"
-   
+    #imagen_url.save(os.path.join(ruta_destino, nombre_imagen))
     
     nueva_mascota = mascota.agregar_mascota(nombre, especie, edad, raza, nombre_imagen, id_secundario)
     if nueva_mascota:
@@ -54,14 +56,14 @@ def  agregar_mascota():
     else: return jsonify({"mensaje": "Error al agregar  mascota."}), 500
     
     @app.route("/mascota/<int:id>", methods=["PUT"])
-    def modificar_mascota(id):
+    def modificar_mascota():
         nombre = request.form.get('nombre')
         especie = request.form.get('especie')
         edad = request.form.get('edad')
         raza = request.form.get('raza')
         id_secundario = request.form.get('id_secundario')
         
-        nombre, especie, edad, raza, nombre_imagen, id_secundario
+        
         """if 'imagen_url' in request.files:
             imagen_url = request.files.get('imagen_url')
             nombre_imagen = secure_filename('imagen_url')
