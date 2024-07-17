@@ -47,11 +47,11 @@ def  agregar_mascota():
     nombre_imagen = secure_filename("imagen_url")
     nombre_base, extension  = os.path.splitext(nombre_imagen)
     nombre_imagen = f"{nombre_base}_{int(time.time())}{extension}"
-    #imagen_url.save(os.path.join(ruta_destino, nombre_imagen))
+    imagen_url.save(os.path.join(ruta_destino, nombre_imagen))
     
     nueva_mascota = mascota.agregar_mascota(nombre, especie, edad, raza, nombre_imagen, id_secundario)
     if nueva_mascota:
-        #imagen_url.Save(os.path.join(ruta_destino, nombre_imagen))
+        imagen_url.Save(os.path.join(ruta_destino, nombre_imagen))
         return jsonify({"mensaje": "Mascota agregada correctamente.", "nombre": nombre, "imagen_url": nombre_imagen}), 201 
     else: return jsonify({"mensaje": "Error al agregar  mascota."}), 500
     
