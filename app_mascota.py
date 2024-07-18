@@ -6,7 +6,7 @@ from app_conexion import Conexion
 class Mascota: 
       
     def tabla_mascota():
-        conexion.cursor.execute('''CREATE TABLE IF NOT EXISTS mascota (
+        Conexion.cursor.execute('''CREATE TABLE IF NOT EXISTS mascota (
                             id INT AUTO_INCREMENT PRIMARY KEY, 
                             nombre VARCHAR(255) NOT NULL, 
                             especie VARCHAR(255) NOT NULL, 
@@ -14,8 +14,8 @@ class Mascota:
                             raza VARCHAR(255) NOT NULL,
                             imagen_url VARCHAR(255), 
                             id_secundario  INT(4))''') 
-        conexion.conn.commit()
-        conexion.conn.close()
+        Conexion.conn.commit()
+        Conexion.conn.close()
            
     
     def agregar_mascota(self, nombre, especie, edad, raza, imagen_url, id_secundario): 
@@ -45,11 +45,11 @@ class Mascota:
         return val
         
             
-    def modificar_mascota(self, id_a_buscar, nuevo_nombre, nueva_especie, nueva_edad, nueva_raza, nueva_imagen_url, nuevo_id_secundario):
+    def modificar_mascota(self, id, nombre, especie, edad, raza, imagen_url, id_secundario):
         conexion = Conexion('127.0.0.1','root', 'root', 'mascotas')
-        valores = (nuevo_nombre, nueva_especie, nueva_edad, nueva_raza, nueva_imagen_url, nuevo_id_secundario, id_a_buscar)
-        sql = ("UPDATE mascota  SET nombre=%s, especie=%s, edad=%s, raza=%s, imagen_url=%s, id_secundario=%s WHERE id=%s")
-        conexion.cursor.execute(sql,valores)
+        #valores = (nombre, especie, edad, raza, imagen_url, id_secundario, id)
+        sql = (f"UPDATE mascota  SET nombre='{nombre}', especie='{especie}', edad='{edad}', raza='{raza}', imagen_url='{imagen_url}', id_secundario='{id_secundario}' WHERE id='{id}'")
+        conexion.cursor.execute(sql)
         conexion.conn.commit()
         val = conexion.cursor.rowcount>0
         conexion.conn.close()
