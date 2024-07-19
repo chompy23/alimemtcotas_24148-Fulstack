@@ -14,7 +14,7 @@ CORS(app)
 
 #habilita las referencias a otros servidores
 #carpeta para guardar las imagenes
-ruta_destino = os.makedirs('./static/imagen/', exist_ok=True)
+ruta_destino = './static/imagen/'
 mascota = Mascota()
 
     
@@ -31,19 +31,27 @@ def mostrar_mascota(id):
     else:
         return "Mascota no encontrada", 404
 
+
+@app.route("/", methods=["POST"])
+def crear_tabla():
+    tabla_creada = mascota.tabla_mascota()
+    if tabla_creada:
+        return jsonify({"mensaje": " Tabla Mascota agregada correctamente.", "nombre": nombre, "imagen_url": imagen_url}), 201 
+    else: 
+        return jsonify({"mensaje": "Error al agregar  la tabla mascota."}), 500
       
 @app.route("/mascota", methods=["POST"])    
 def  agregar_mascota():
-    nombre = request.form.get('nombre')
-    especie = request.form.get('especie')
-    edad = request.form.get('edad')
-    raza = request.form.get('raza')
-    imagen_url = request.files.get('imagen_url')
-    id_secundario = request.form.get('id_secundario')
+    nombre = request.form['nombre']
+    especie = request.form['especie']
+    edad = request.form['edad']
+    raza = request.form['raza']
+    imagen = request.files['imagen_url']
+    id_secundario = request.form['id_secundario']
     
     nombre_imagen = ""
     
-    nombre_imagen = secure_filename('imagen_url')
+    nombre_imagen = secure_filename(imagen.filename)
     nombre_base, extension  = os.path.splitext(nombre_imagen)
     nombre_imagen = f"{nombre_base}_{int(time.time())}{extension}"
     
@@ -51,24 +59,39 @@ def  agregar_mascota():
     
     nueva_mascota = mascota.agregar_mascota(nombre, especie, edad, raza, nombre_imagen, id_secundario)
     if nueva_mascota:
-        #imagen_url.save(os.path.join(ruta_destino, nombre_imagen))
+        imagen.save(os.path.join(ruta_destino, nombre_imagen))
         return jsonify({"mensaje": "Mascota agregada correctamente.", "nombre": nombre, "imagen_url": nombre_imagen}), 201 
     else: return jsonify({"mensaje": "Error al agregar  mascota."}), 500
     
 @app.route("/mascota/<int:id>", methods=["PUT"])
 def modificar_mascota(id):
-    nombre = request.form.get('nombre')
-    especie = request.form.get('especie')
-    edad = request.form.get('edad')
-    raza = request.form.get('raza')
-    id_secundario = request.form.get('id_secundario')
-    imagen_url = request.files.get('imagen_url')    
+    nombre = request.form['nombre']
+    especie = request.form['especie']
+    edad = request.form['edad']
+    raza = request.form['raza']
+    id_secundario = request.form['id_secundario']
     
-    nombre_imagen = ""
+    
+    if 'imagen_url' in request.files: 
+        imagen = request.files['imagen_url'] # Procesamiento de la imagen 
+        nombre_imagen = secure_filename(imagen.filename) 
+        nombre_base, extension = os.path.splitext(nombre_imagen) 
+        nombre_imagen = f"{nombre_base}_{int(time.time())}{extension}" # Guardar la imagen en el servidor 
+        imagen.save(os.path.join(ruta_destino, nombre_imagen)) # Busco el producto guardado 
         
-    nombre_imagen = secure_filename('imagen_url')
-    nombre_base, extension  = os.path.splitext(nombre_imagen)
-    nombre_imagen = f"{nombre_base}_{int(time.time())}{extension}"
+        mascota_encontrada = mascota.consultar_mascota(id) 
+        if mascota_encontrada: # Si existe el producto... 
+            imagen_vieja =  mascota_encontrada["imagen_url"] # Armo la ruta a la imagen 
+            ruta_imagen = os.path.join(ruta_destino, imagen_vieja) # Y si existe la borro. 
+            if os.path.exists(ruta_imagen): 
+                os.remove(ruta_imagen) 
+    else: 
+         mascota_encontrada = mascota.consultar_mascota(id)  
+         if mascota_encontrada: 
+             nombre_imagen = mascota["imagen_url"] # Se llama al método modificar_mascota pasando el codigo del producto y los nuevos datos. 
+             
+    
+    
             
     mascota_modificada =  mascota.modificar_mascota(id, nombre, especie, edad, raza, nombre_imagen, id_secundario)    
     if mascota_modificada: 

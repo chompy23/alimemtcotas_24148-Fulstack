@@ -6,16 +6,12 @@ from app_conexion import Conexion
 class Mascota: 
       
     def tabla_mascota():
-        Conexion.cursor.execute('''CREATE TABLE IF NOT EXISTS mascota (
-                            id INT AUTO_INCREMENT PRIMARY KEY, 
-                            nombre VARCHAR(255) NOT NULL, 
-                            especie VARCHAR(255) NOT NULL, 
-                            edad  VARCHAR(255) NOT NULL, 
-                            raza VARCHAR(255) NOT NULL,
-                            imagen_url VARCHAR(255), 
-                            id_secundario  INT(4))''') 
-        Conexion.conn.commit()
-        Conexion.conn.close()
+        conexion = Conexion('127.0.0.1','root', 'root', 'mascotas')
+        conexion.cursor.execute("CREATE TABLE IF NOT EXIST mascotas.mascota ( `id` INT AUTO_INCREMENT , `nombre` VARCHAR(45) NOT NULL, `especie` VARCHAR(45) NOT NULL, `edad` VARCHAR(45) NOT NULL, `raza` VARCHAR(45) NOT NULL, `imagen_url` VARCHAR(255) NULL, `id_secundario` INT(4) NOT NULL, Primary Key (id))")
+        conexion.conn.commit()
+        val = conexion.cursor.rowcount>0
+        conexion.conn.close()
+        return val
            
     
     def agregar_mascota(self, nombre, especie, edad, raza, imagen_url, id_secundario): 
