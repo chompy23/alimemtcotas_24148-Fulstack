@@ -75,6 +75,15 @@ def modificar_mascota(id):
             return jsonify({"mensaje": "Mascota modificado"}), 200 
     else: 
             return jsonify({"mensaje": "Mascota no encontrado"}), 403
+        
+@app.route("/mascota/<int:id>", methods=["DELETE"])
+def eliminar_mascota(id):
+    
+    mascota_eliminada = mascota.eliminar_mascota(id)
+    if mascota_eliminada:
+        return jsonify({"mensaje": "Mascota eliminada correctamente"}), 200
+    else:
+        return jsonify({"mensaje": "Error al eliminar mascota."}), 500 
     
     
 if __name__ == "__main__":
