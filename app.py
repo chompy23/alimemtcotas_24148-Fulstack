@@ -10,9 +10,10 @@ import time
 
 
 app = Flask(__name__)
-CORS(app)
 
 #habilita las referencias a otros servidores
+CORS(app)
+
 #carpeta para guardar las imagenes
 ruta_destino = './static/imagen/'
 mascota = Mascota()
@@ -54,9 +55,7 @@ def  agregar_mascota():
     nombre_imagen = secure_filename(imagen.filename)
     nombre_base, extension  = os.path.splitext(nombre_imagen)
     nombre_imagen = f"{nombre_base}_{int(time.time())}{extension}"
-    
-    
-    
+        
     nueva_mascota = mascota.agregar_mascota(nombre, especie, edad, raza, nombre_imagen, id_secundario)
     if nueva_mascota:
         imagen.save(os.path.join(ruta_destino, nombre_imagen))
@@ -70,35 +69,38 @@ def modificar_mascota(id):
     edad = request.form['edad']
     raza = request.form['raza']
     id_secundario = request.form['id_secundario']
-    
-    
+        
     if 'imagen_url' in request.files: 
-        imagen = request.files['imagen_url'] # Procesamiento de la imagen 
+        imagen = request.files['imagen_url'] 
+        # Procesamiento de la imagen 
         nombre_imagen = secure_filename(imagen.filename) 
         nombre_base, extension = os.path.splitext(nombre_imagen) 
-        nombre_imagen = f"{nombre_base}_{int(time.time())}{extension}" # Guardar la imagen en el servidor 
-        imagen.save(os.path.join(ruta_destino, nombre_imagen)) # Busco el producto guardado 
+        nombre_imagen = f"{nombre_base}_{int(time.time())}{extension}" 
+        # Guardar la imagen en el servidor 
+        imagen.save(os.path.join(ruta_destino, nombre_imagen)) 
         
+        # Busco el producto guardado 
         mascota_encontrada = mascota.consultar_mascota(id) 
         if mascota_encontrada: # Si existe el producto... 
-            imagen_vieja =  mascota_encontrada["imagen_url"] # Armo la ruta a la imagen 
-            ruta_imagen = os.path.join(ruta_destino, imagen_vieja) # Y si existe la borro. 
+            imagen_vieja =  mascota_encontrada["imagen_url"] 
+            # Armo la ruta a la imagen 
+            ruta_imagen = os.path.join(ruta_destino, imagen_vieja) 
+            # Y si existe la borro. 
             if os.path.exists(ruta_imagen): 
                 os.remove(ruta_imagen) 
     else: 
          mascota_encontrada = mascota.consultar_mascota(id)  
          if mascota_encontrada: 
-             nombre_imagen = mascota["imagen_url"] # Se llama al método modificar_mascota pasando el codigo del producto y los nuevos datos. 
+             nombre_imagen = mascota["imagen_url"] 
              
-    
-    
-            
+    # Se llama al método modificar_mascota pasando el codigo del producto y los nuevos datos. 
     mascota_modificada =  mascota.modificar_mascota(id, nombre, especie, edad, raza, nombre_imagen, id_secundario)    
     if mascota_modificada: 
             return jsonify({"mensaje": "Mascota modificado"}), 200 
     else: 
             return jsonify({"mensaje": "Mascota no encontrado"}), 403
         
+
 @app.route("/mascota/<int:id>", methods=["DELETE"])
 def eliminar_mascota(id):
     
