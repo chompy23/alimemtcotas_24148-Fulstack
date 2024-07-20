@@ -57,6 +57,7 @@ def  agregar_mascota():
     nombre_imagen = f"{nombre_base}_{int(time.time())}{extension}"
         
     nueva_mascota = mascota.agregar_mascota(nombre, especie, edad, raza, nombre_imagen, id_secundario)
+    print(nueva_mascota)
     if nueva_mascota:
         imagen.save(os.path.join(ruta_destino, nombre_imagen))
         return jsonify({"mensaje": "Mascota agregada correctamente.", "nombre": nombre, "imagen_url": nombre_imagen}), 201 

@@ -22,7 +22,7 @@ class Mascota:
         valores = (nombre, especie, edad, raza, imagen_url, id_secundario)
         conexion.cursor.execute(sql,valores)
         conexion.conn.commit()
-        val = conexion.cursor.lastrowid
+        val = conexion.cursor.rowcount>0
         conexion.conn.close()
         return val
     
