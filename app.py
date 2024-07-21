@@ -4,18 +4,23 @@ import mysql.connector
 from werkzeug.utils import secure_filename
 from app_mascota import Mascota
 
-import os
+import os, pathlib
 import time
 
-
+#carpeta para guardar las imagenes
+UPLOAD_FOLDER = 'Alimencotas-Comision24148-TP1/static/imagen/'
+#ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
 
 app = Flask(__name__)
-
+#app.config[UPLOAD_FOLDER] = UPLOAD_FOLDER
 #habilita las referencias a otros servidores
 CORS(app)
 
-#carpeta para guardar las imagenes
-ruta_destino = './static/imagen/'
+
+"""#carpeta para guardar las imagenes
+UPLOAD_FOLDER = '/static/imagen'
+ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}"""
+
 mascota = Mascota()
 
     
@@ -33,34 +38,35 @@ def mostrar_mascota(id):
         return "Mascota no encontrada", 404
 
 
-@app.route("/", methods=["POST"])
+"""@app.route("/", methods=["POST"])
 def crear_tabla():
     tabla_creada = mascota.tabla_mascota()
     if tabla_creada:
         return jsonify({"mensaje": " Tabla Mascota agregada correctamente.", "nombre": nombre, "imagen_url": imagen_url}), 201 
     else: 
         return jsonify({"mensaje": "Error al agregar  la tabla mascota."}), 500
-      
+      """
 @app.route("/mascota", methods=["POST"])    
 def  agregar_mascota():
     nombre = request.form['nombre']
     especie = request.form['especie']
     edad = request.form['edad']
     raza = request.form['raza']
-    imagen = request.files['imagen_url']
+    imagen_url = request.files['imagen_url']
     id_secundario = request.form['id_secundario']
     
     nombre_imagen = ""
     
-    nombre_imagen = secure_filename(imagen.filename)
+    nombre_imagen = secure_filename(imagen_url.filename)
     nombre_base, extension  = os.path.splitext(nombre_imagen)
-    nombre_imagen = f"{nombre_base}_{int(time.time())}{extension}"
-        
-    nueva_mascota = mascota.agregar_mascota(nombre, especie, edad, raza, nombre_imagen, id_secundario)
-    print(nueva_mascota)
+    nombre_imagen_final = f"{UPLOAD_FOLDER}{nombre_base}_{int(time.time())}{extension}"
+    
+       
+    nueva_mascota = mascota.agregar_mascota(nombre, especie, edad, raza, nombre_imagen_final, id_secundario)
+    
     if nueva_mascota:
-        imagen.save(os.path.join(ruta_destino, nombre_imagen))
-        return jsonify({"mensaje": "Mascota agregada correctamente.", "nombre": nombre, "imagen_url": nombre_imagen}), 201 
+        imagen_url.save(nombre_imagen_final)
+        return jsonify({"mensaje": "Mascota agregada correctamente.", "nombre": nombre, "imagen_url": nombre_imagen_final}), 201 
     else: return jsonify({"mensaje": "Error al agregar  mascota."}), 500
     
 @app.route("/mascota/<int:id>", methods=["PUT"])
