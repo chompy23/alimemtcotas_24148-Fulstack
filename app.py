@@ -12,14 +12,11 @@ UPLOAD_FOLDER = 'Alimencotas-Comision24148-TP1/static/imagen/'
 #ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
 
 app = Flask(__name__)
-#app.config[UPLOAD_FOLDER] = UPLOAD_FOLDER
-#habilita las referencias a otros servidores
+
 CORS(app)
 
 
-"""#carpeta para guardar las imagenes
-UPLOAD_FOLDER = '/static/imagen'
-ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}"""
+
 
 mascota = Mascota()
 

@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Listado de Productos</title>
+    <title>Listado de Mascotas</title>
     <link rel="stylesheet" href="./static/css/estilos.css">
 </head>
 
@@ -64,9 +64,7 @@
                         '<td>' + mascota.especie + " " + '</td>' +
                         '<td>' + mascota.edad + '</td>' +
                         '<td>' + mascota.raza + '</td>' +
-
-                        // Mostrar miniatura de la imagen (verificar que funciona)
-                        '<td>' + '<img src=' + mascota.imagen_url + '  alt="Imagen de la mascota"  style="width: 100px;">' + '</td>' +
+                        '<td>' + '<img src=' + '../' + mascota.imagen_url + '  alt="Imagen de la mascota"  style="width: 100px;">' + '</td>' +
                         '<td>' + mascota.id_secundario + '</td>';
 
                     //Al subir al servidor, deberá utilizarse la siguiente ruta. USUARIO debe ser reemplazado por el nombre de usuario de Pythonanywhere
