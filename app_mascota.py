@@ -47,7 +47,7 @@ class Mascota:
         sql = (f"UPDATE mascota  SET nombre='{nombre}', especie='{especie}', edad='{edad}', raza='{raza}', imagen_url='{imagen_url}', id_secundario='{id_secundario}' WHERE id='{id}'")
         conexion.cursor.execute(sql)
         conexion.conn.commit()
-        val = conexion.cursor.lastrowid
+        val = conexion.cursor.rowcount>0
         conexion.conn.close()
         return val
     

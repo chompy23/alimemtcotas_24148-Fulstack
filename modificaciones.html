@@ -13,45 +13,49 @@
     <div class="logo-centrado">
         <img src="./imagen/mascotas corazon.jpg" alt="logo">
     </div>
-    <h1>Modificar Productos del Inventario</h1><br>
+    <h1>Modificar Mascotas del Inventario</h1><br>
 
     <!-- Contenedor principal que será controlado por JavaScript. Este contenedor tendrá dos formularios. -->
     <div id="app">
         <!-- Primer formulario: Selector de producto. LLama a la función obtenerProducto cuando se envíe el formulario -->
         <form id="form-obtener-mascota">
             <label for="id">Id Mascota:</label>
-            <input type="text" id="id" required><br>
+            <input type="number" id="id" required><br>
             <button type="submit">Modificar Mascota</button> <a href="index1.html">Menu principal</a>
         </form>
 
         <!-- Segundo formulario: se muestra solo si mostrarDatosProducto es verdadero. Llama a la función guardarCambios -->
         <div id="datos-Mascota" style="display: none;">
             <h2>Datos de la Mascota</h2>
-            <form id="form-guardar-cambios">
+            <form id="form-guardar-cambios" enctype="multipart/form-data" style="display: none;">
                 <label for="nombreAModificar">nombre:</label>
-                <input type="text" id="nombreAModificar" required><br>
+                <input type="text" id="nombreAModificar" name="nombre" required><br>
 
                 <label for="especieAModificar">Especie:</label>
-                <input type="text" id="especieAModificar" required><br>
+                <input type="text" id="especieAModificar" name="especie" required><br>
 
                 <label for="edadAModificar">Edad:</label>
-                <input type="text" id="edadAModificar" required><br>
+                <input type="text" id="edadAModificar" name="edad" required><br>
 
                 <label for="razaAModificar">Raza:</label>
-                <input type="text" id="razaAModificar" required><br>
+                <input type="text" id="razaAModificar" name="raza" required><br>
 
+                <h4>Imagen actual</h4>
                 <!-- Imagen actual del producto - Debe comentarse al subirse al servidor-->
                 <img id="imagen-actual" style="max-width: 200px; display: none;">
+                <br>
+                <br>
+
                 <!-- Vista previa de la nueva imagen seleccionada -->
                 <img id="imagen-vista-previa" style="max-width: 200px; display: none;">
 
                 <!-- Input para nueva imagen -->
                 <label for="nuevaImagen">Nueva Imagen:</label>
-                <input type="file" id="nuevaImagen"><br>
+                <input type="file" id="nuevaImagen" name="imagen_url"><br>
 
                 <br>
                 <label for="id-SecundarioAModificar">Id_secundario:</label>
-                <input type="number" id="id-SecundarioAModificar" required><br>
+                <input type="number" id="id-SecundarioAModificar" name="id_secundario" required><br>
 
                 <button type="submit">Guardar Cambios</button>
                 <a href="modificaciones.html">Cancelar</a>
@@ -60,23 +64,25 @@
     </div>
     <script>
         // const URL = "http://127.0.0.1:5000/"
-        const URL = "http://127.0.0.1:5000/"
+        var URL = "http://127.0.0.1:5000/"
 
 
         // Al subir al servidor, deberá utilizarse la siguiente ruta. USUARIO debe ser reemplazado por el nombre de usuario de Pythonanywhere
         //const URL = "https://USUARIO.pythonanywhere.com/"
 
         // Variables de estado para controlar la visibilidad y los datos del formulario
-        let id = '';
-        let nombre = '';
-        let especie = '';
-        let edad = '';
-        let raza = '';
-        let imagen_url = '';
-        let id_secundario = '';
-        let imagenSeleccionada = null;
-        let imagenUrlTemp = null;
-        let mostrarDatosMascota = false;
+        var id = '';
+        var nombre = '';
+        var especie = '';
+        var edad = '';
+        var raza = '';
+        var imagen_url = '';
+        var id_secundario = '';
+        var imagenSeleccionada = null;
+        var imagenUrlTemp = null;
+        var imagenVistaPrevia = null;
+        var mostrarDatosMascota = false;
+        var fila = [];
 
         document.getElementById('form-obtener-mascota').addEventListener('submit', obtenerMascota);
         document.getElementById('form-guardar-cambios').addEventListener('submit', guardarCambios);
@@ -85,7 +91,7 @@
         // Se ejecuta cuando se envía el formulario de consulta. Realiza una solicitud GET a la API y obtiene los datos del producto correspondiente al código ingresado.
         function obtenerMascota(event) {
             event.preventDefault();
-            codigo = document.getElementById('id').value;
+            id = document.getElementById('id').value;
             fetch(URL + 'mascota/' + id)
                 .then(response => {
                     if (response.ok) {
@@ -111,17 +117,17 @@
 
         // Muestra el formulario con los datos del producto
         function mostrarFormulario() {
-            if (mostrarDatosProducto) {
+            if (mostrarDatosMascota) {
                 document.getElementById('nombreAModificar').value = nombre;
                 document.getElementById('especieAModificar').value = especie;
                 document.getElementById('edadAModificar').value = edad;
                 document.getElementById('razaAModificar').value = raza;
                 document.getElementById('id-SecundarioAModificar').value = id_secundario;
+                document.getElementById('datos-Mascota').style.display = 'block';
 
                 const imagenActual = document.getElementById('imagen-actual');
                 if (imagen_url && !imagenSeleccionada) { // Verifica si imagen_url no está vacía y no se ha seleccionado una imagen
-
-                    imagenActual.src = '../Alimencotas-Comision24148-TP1/static/imagen/' + imagen_url;
+                    imagenActual.src = imagen_url;
                     //Al subir al servidor, deberá utilizarse la siguiente ruta. USUARIO debe ser reemplazado por el nombre de usuario de Pythonanywhere
                     //imagenActual.src = 'https://www.pythonanywhere.com/user/USUARIO/files/home/USUARIO/mysite/static/imagenes/' + imagen_url;
                     imagenActual.style.display = 'block'; // Muestra la imagen actual
@@ -129,42 +135,46 @@
                     imagenActual.style.display = 'none'; // Oculta la imagen si no hay URL
                 }
 
-                document.getElementById('datos-Mascota').style.display = 'block';
+                document.getElementById('form-guardar-cambios').style.display = 'block';
             } else {
                 document.getElementById('datos-Mascota').style.display = 'none';
             }
         }
 
+
+
         // Se activa cuando el usuario selecciona una imagen para cargar.
         function seleccionarImagen(event) {
-            const file = event.target.files[0];
-            imagenSeleccionada = file;
-            imagenUrlTemp = URL.createObjectURL(file); // Crea una URL temporal para la vista previa
-
-            const imagenVistaPrevia = document.getElementById('imagen-vista-previa');
-            imagenVistaPrevia.src = imagenUrlTemp;
+            fila = event.target.files[0];
+            imagenSeleccionada = (fila['name']);
+            // Crea una URL temporal para mostrar la imagen seleccionada.
+            imagenVistaPrevia = document.getElementById('imagen-vista-previa');
+            imagenVistaPrevia.src = `imagen/${imagenSeleccionada}`;
             imagenVistaPrevia.style.display = 'block';
         }
+
+
 
         // Se usa para enviar los datos modificados del producto al servidor.
         function guardarCambios(event) {
             event.preventDefault();
 
-            const formData = new FormData();
+            const formData = new FormData(event.target);
             formData.append('id', id);
-            formData.append('nombre', document.getElementById('nombreAModificar').value);
-            formData.append('especie', document.getElementById('especieAModificar').value);
-            formData.append('edad', document.getElementById('edadAModificar').value);
-            formData.append('raza', document.getElementById('razaAModificar').value);
-            formData.append('id_secundario', document.getElementById('id_secundarioAModificar').value);
+            formData.append('nombre', `${nombre}`);
+            formData.append('especie', `${especie}`);
+            formData.append('edad', `${edad}`);
+            formData.append('raza', `${raza}`);
+            formData.append('id_secundario', `${id_secundario}`);
 
             // Si se ha seleccionado una imagen nueva, la añade al formData. 
             if (imagenSeleccionada) {
-                formData.append('imagen_url', imagenSeleccionada, imagenSeleccionada.name);
+                formData.append('imagen_url', imagenSeleccionada);
             }
 
-            fetch(URL + 'mascota/' + codigo, {
+            fetch(URL + 'mascota/' + id, {
                 method: 'PUT',
+                // El body debe ser un objeto con los datos modificados del producto.
                 body: formData,
             })
                 .then(response => {
@@ -179,7 +189,7 @@
                     limpiarFormulario();
                 })
                 .catch(error => {
-                    console.error('Error:', error);
+                    //console.error('Error:', error);
                     alert('Error al actualizar el producto.');
                 });
         }
@@ -196,7 +206,7 @@
             const imagenActual = document.getElementById('imagen-actual');
             imagenActual.style.display = 'none';
 
-            const imagenVistaPrevia = document.getElementById('imagen-vista-previa');
+            imagenVistaPrevia = document.getElementById('imagen-vista-previa');
             imagenVistaPrevia.style.display = 'none';
 
             id = '';
@@ -208,6 +218,7 @@
             id_secundario = '';
             imagenSeleccionada = null;
             imagenUrlTemp = null;
+            imagenVistaPrevia = null;
             mostrarDatosMascota = false;
 
             document.getElementById('datos-Mascota').style.display = 'none';
