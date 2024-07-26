@@ -7,10 +7,9 @@ from app_mascota import Mascota
 import os, pathlib
 import time
 
-#carpeta para guardar las imagene
-UPLOAD_FOLDER = 'C:/Users/sergi/OneDrive/Documents/codoacodo/Ejemplos-Ejercicios/front-end-final/Alimencotas-Comision24148-TP1/static/imagen/'
-#DIRECCION = "C:/Users/sergi/OneDrive/Documents/codoacodo/Ejemplos-Ejercicios/front-end-final/"
-#ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
+#carpeta para guardar las imagenes
+DIRECCION = './imagen'
+DIRECCION2 = './static/imagen/'
 
 app = Flask(__name__)
 
@@ -57,7 +56,7 @@ def  agregar_mascota():
     
     nombre_imagen = secure_filename(imagen_url.filename)
     nombre_base, extension  = os.path.splitext(nombre_imagen)
-    nombre_imagen_final = f"{UPLOAD_FOLDER}{nombre_base}_{int(time.time())}{extension}"
+    nombre_imagen_final = f"{DIRECCION2}{nombre_base}_{int(time.time())}{extension}"
     
        
     nueva_mascota = mascota.agregar_mascota(nombre, especie, edad, raza, nombre_imagen_final, id_secundario)
@@ -80,21 +79,19 @@ def modificar_mascota(id):
         #Procesamiento de la imagen 
         nombre_imagen = secure_filename(imagen.filename) 
         nombre_base, extension = os.path.splitext(nombre_imagen) 
-        modifica_nombre_imagen = f"{UPLOAD_FOLDER}{nombre_base}_{int(time.time())}{extension}" 
+        modifica_nombre_imagen = f"{DIRECCION2}{nombre_base}_{int(time.time())}{extension}" 
         # Guardar la imagen en el servidor """
         imagen.save(modifica_nombre_imagen) 
         
-        # Busco el producto guardado 
+        # Busco la imagen anterior del producto en el directorio 
         mascota_encontrada = mascota.consultar_mascota(id) 
         if mascota_encontrada: # Si existe el producto... 
             imagen_vieja =  mascota_encontrada['imagen_url'] 
+            # Armo la ruta a la imagen
             ruta_a_borrar = f"{imagen_vieja}"
+            # Y si existe la borro.
             os.remove(ruta_a_borrar) 
-            # Armo la ruta a la imagen 
-            #ruta_imagen = os.path.join(UPLOAD_FOLDER, imagen_vieja) 
-            # Y si existe la borro. 
-            """if os.path.exists(ruta_imagen): 
-                os.remove(ruta_imagen) """
+    
     else: 
          mascota_encontrada = mascota.consultar_mascota(id)  
          if mascota_encontrada: 
@@ -110,7 +107,14 @@ def modificar_mascota(id):
 
 @app.route("/mascota/<int:id>", methods=["DELETE"])
 def eliminar_mascota(id):
-    
+    #Borro la imagen en el directorio
+    mascota_encontrada = mascota.consultar_mascota(id) 
+    if mascota_encontrada: # Si existe el producto... 
+            imagen_vieja =  mascota_encontrada['imagen_url'] 
+            ruta_a_borrar = f"{imagen_vieja}"
+            os.remove(ruta_a_borrar)
+             
+    #Borro la mascota de la base de datos
     mascota_eliminada = mascota.eliminar_mascota(id)
     if mascota_eliminada:
         return jsonify({"mensaje": "Mascota eliminada correctamente"}), 200

@@ -58,6 +58,7 @@
 
                 // Iteramos sobre cada producto y agregamos filas a la tabla
                 for (let mascota of data) {
+                    console.log(mascota.imagen_url)
                     let fila = document.createElement('tr'); //Crea una nueva fila de tabla (<tr>) para cada mascota.
                     fila.innerHTML = '<td>' + mascota.id + '</td>' +
                         '<td>' + mascota.nombre + '</td>' +
